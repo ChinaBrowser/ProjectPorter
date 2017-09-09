@@ -8,65 +8,102 @@
 import string
 import requests
 
-coin_list = ["ltc","eth","bcc","zec","xrp","nxt","etc","bts","doge","dash","nmc","xem","xpm","xmr"]
-
-def getCoinList():
-
-    return coin_list
+coin_list = ["LTC","ETH","BCC","ZEC","XRP","NXT","ETC","BTS","DOGE","DASH","NMC","XEM","XPM","XMR"]
+curr_list = ["BTC","ETH","XMR","USDT","LTC","ETH","BCC","ZEC","XRP","NXT","ETC","BTS","DOGE","DASH","NMC","XEM","XPM","XMR"]
+curr_default = ["BTC","ETH","XMR","USDT"]
 
 def getCurrentData():
     data = requests.get("https://poloniex.com/public?command=returnTicker").json()
 
     polo = {}
-    polo["ltc"] = data["BTC_LTC"]["last"]
-    polo["eth"] = data["BTC_ETH"]["last"]
-    polo["bcc"] = data["BTC_BCH"]["last"]
-    polo["zec"] = data["BTC_ZEC"]["last"]
-    polo["xrp"] = data["BTC_XRP"]["last"]
-    polo["nxt"] = data["BTC_NXT"]["last"]
-    polo["etc"] = data["BTC_ETC"]["last"]
-    polo["bts"] = data["BTC_BTS"]["last"]
-    polo["doge"] = data["BTC_DOGE"]["last"]
-    polo["dash"] = data["BTC_DASH"]["last"]
-    polo["nmc"] = data["BTC_NMC"]["last"]
-    polo["xem"] = data["BTC_XEM"]["last"]
-    polo["xpm"] = data["BTC_XPM"]["last"]
-    polo["xmr"] = data["BTC_XMR"]["last"]
+    price = {}
+    fee = getFee()["trade"]
+
+    for coin in coin_list:
+        polo[coin] = {}
+        if coin == "BCC":
+            polo["BCH"] = {}
+        for curr in curr_default:
+            if coin == curr:
+                polo[coin][curr] = 1.00
+            else:
+                if coin == "BCC":
+                    struct = "%s_%s" % (curr,"BCH")
+                    if struct in data:
+                        polo["BCH"][curr] = float(data[struct]["last"])
+                else:
+                    struct = "%s_%s" % (curr,coin)
+                    if struct in data:
+                        polo[coin][curr] = float(data[struct]["last"])
+
+    polo["BCC"] = polo["BCH"]
+
+    for coin in coin_list:
+        for curr in curr_list:
+            if curr in curr_default:
+                continue
+            if coin == curr:
+                polo[coin][curr] = 1.00
+            else:
+                struct = "%s_%s" % (curr,coin)
+                if struct in data:
+                    continue
+                price["curr"] = polo[curr]["BTC"]
+                price["coin"] = polo[coin]["BTC"]
+                polo[coin][curr] = (price["coin"]/(1-fee["buy"]))/(price["curr"]*(1-fee["sell"]))
+                #msg = "Poloniex %s %s %.5f" %(coin,curr,polo[coin][curr])
+                #print msg
+                
 
     return polo
 
+def getCoinList():
+
+    return coin_list
+
+def getCurrList():
+
+    return curr_list
+
 def getFee():
     fee = {}
-    fee["trade"] = 0.0002
-    fee["btc"]["rate"] = 0
-    fee["btc"]["static"] = 0.0001
-    fee["ltc"]["rate"] = 0
-    fee["ltc"]["static"] = 0.001
-    fee["eth"]["rate"] = 0
-    fee["eth"]["static"] = 0.005
-    fee["bcc"]["rate"] = 0
-    fee["bcc"]["static"] = 0.0001
-    fee["zec"]["rate"] = 0
-    fee["zec"]["static"] = 0.001
-    fee["xrp"]["rate"] = 0
-    fee["xrp"]["static"] = 0.15
-    fee["nxt"]["rate"] = 0
-    fee["nxt"]["static"] = 1
-    fee["etc"]["rate"] = 0
-    fee["etc"]["static"] = 0.01
-    fee["bts"]["rate"] = 0
-    fee["bts"]["static"] = 5
-    fee["doge"]["rate"] = 0
-    fee["doge"]["static"] = 5
-    fee["dash"]["rate"] = 0
-    fee["dash"]["static"] = 0.01
-    fee["nmc"]["rate"] = 0
-    fee["nmc"]["static"] = 0.01
-    fee["xem"]["rate"] = 0
-    fee["xem"]["static"] = 15
-    fee["xpm"]["rate"] = 0
-    fee["xpm"]["static"] = 0.01
-    fee["xmr"]["rate"] = 0
-    fee["xmr"]["static"] = 0.05
+    fee["trade"] = {}
+    fee["trade"]["buy"] = 0.00025
+    fee["trade"]["sell"] = 0.00015
+
+    for coin in coin_list:
+        fee[coin] = {}
+
+    fee["BTC"] = {}
+    fee["BTC"]["rate"] = 0
+    fee["BTC"]["static"] = 0.0001
+    fee["LTC"]["rate"] = 0
+    fee["LTC"]["static"] = 0.001
+    fee["ETH"]["rate"] = 0
+    fee["ETH"]["static"] = 0.005
+    fee["BCC"]["rate"] = 0
+    fee["BCC"]["static"] = 0.0001
+    fee["ZEC"]["rate"] = 0
+    fee["ZEC"]["static"] = 0.001
+    fee["XRP"]["rate"] = 0
+    fee["XRP"]["static"] = 0.15
+    fee["NXT"]["rate"] = 0
+    fee["NXT"]["static"] = 1
+    fee["ETC"]["rate"] = 0
+    fee["ETC"]["static"] = 0.01
+    fee["BTS"]["rate"] = 0
+    fee["BTS"]["static"] = 5
+    fee["DOGE"]["rate"] = 0
+    fee["DOGE"]["static"] = 5
+    fee["DASH"]["rate"] = 0
+    fee["DASH"]["static"] = 0.01
+    fee["NMC"]["rate"] = 0
+    fee["NMC"]["static"] = 0.01
+    fee["XEM"]["rate"] = 0
+    fee["XEM"]["static"] = 15
+    fee["XPM"]["rate"] = 0
+    fee["XPM"]["static"] = 0.01
+    fee["XMR"]["rate"] = 0
+    fee["XMR"]["static"] = 0.05
 
     return fee
