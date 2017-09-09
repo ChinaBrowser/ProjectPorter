@@ -36,7 +36,7 @@ def main():
                     if p in polo_price and i in polo_price[p]:
                         ratio = polo_price[p][i]/bter_price[p][i]
                         if 1.15 > ratio > 1.035:
-                            msg = "Bought %s from Bter via %s, Sold at Bter, %.4f%% profit, %s%% + %s %s fee" % (p,i,100*(float(ratio)-1),100*bter.getFee()[p]["rate"],bter.getFee()[p]["static"],p)
+                            msg = "Bought %s from Bter via %s, Sold at Poloniex, %.4f%% profit, %s%% + %s %s fee" % (p,i,100*(float(ratio)-1),100*bter.getFee()[p]["rate"],bter.getFee()[p]["static"],p)
                             print msg
 
                     if p in bit_price and i in bit_price[p]:
