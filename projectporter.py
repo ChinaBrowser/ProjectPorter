@@ -55,13 +55,13 @@ def main():
                     if p in bit_price and i in bit_price[p]:
                         ratio = bit_price[p][i]/bter_price[p][i]
                         if High > ratio > Low:
-                            msg = "%s (Send to Bitfinex), Bter, %s(From Bitfinex), %.4f%%, %s%% + %s %s" % (p,i,100*(float(ratio)-1),100*bter_fee()[p]["rate"],bter_fee[p]["static"],p)
+                            msg = "%s (Send to Bitfinex), Bter, %s(From Bitfinex), %.4f%%, %s%% + %s %s" % (p,i,100*(float(ratio)-1),100*bter_fee[p]["rate"],bter_fee[p]["static"],p)
                             print msg
 
                     if p in bitt_price and i in bitt_price[p]:
                         ratio = bitt_price[p][i]/bter_price[p][i]
                         if High > ratio > Low:
-                            msg = "%s (Send to Bittrex), Bter, %s(From Bittrex), %.4f%%, %s%% + %s %s" % (p,i,100*(float(ratio)-1),100*bter_fee()[p]["rate"],bter_fee[p]["static"],p)
+                            msg = "%s (Send to Bittrex), Bter, %s(From Bittrex), %.4f%%, %s%% + %s %s" % (p,i,100*(float(ratio)-1),100*bter_fee[p]["rate"],bter_fee[p]["static"],p)
                             print msg
 
         #Poloniex
@@ -84,6 +84,12 @@ def main():
                             msg = "%s (Send to Bitfinex), Poloniex, %s (From Bitfinex), %.4f%%, %s %s" % (p,i,100*(float(ratio)-1),polo_fee[p]["static"],p)
                             print msg
 
+                    if p in bitt_price and i in bitt_price[p]:
+                        ratio = bitt_price[p][i]/polo_price[p][i]
+                        if High > ratio > Low:
+                            msg = "%s (Send to Bittrex), Poloniex, %s(From Bittrex), %.4f%%, %s%% + %s %s" % (p,i,100*(float(ratio)-1),100*polo_fee[p]["rate"],polo_fee[p]["static"],p)
+                            print msg
+
         #Bitfinex
         for i in bit_currs:
             if i in bit_list:
@@ -101,6 +107,37 @@ def main():
                         ratio = bter_price[p][i]/bit_price[p][i]
                         if High > ratio > Low:
                             msg = "%s (Send to Bter), Bitfinex, %s (From Bter), %.4f%%, %s %s" % (p,i,100*(float(ratio)-1),bit_fee[p]["static"],p)
+                            print msg
+
+                    if p in bitt_price and i in bitt_price[p]:
+                        ratio = bitt_price[p][i]/bit_price[p][i]
+                        if High > ratio > Low:
+                            msg = "%s (Send to Bittrex), Bitfinex, %s(From Bittrex), %.4f%%, %s %s" % (p,i,100*(float(ratio)-1),100*bit_fee[p]["rate"],bit_fee[p]["static"],p)
+                            print msg
+
+        #Bittrex
+        for i in bitt_currs:
+            if i in bitt_list:
+                for p in bitt_list:
+                    if i == p:
+                        continue
+
+                    if p in polo_price and i in polo_price[p]:
+                        ratio = polo_price[p][i]/bitt_price[p][i]
+                        if High > ratio > Low:
+                            msg = "%s (Send to Poloniex), Bittrex, %s (From Poloniex), %.4f%%, %s %s" % (p,i,100*(float(ratio)-1),bitt_fee[p]["static"],p)
+                            print msg
+
+                    if p in bter_price and i in bter_price[p]:
+                        ratio = bter_price[p][i]/bitt_price[p][i]
+                        if High > ratio > Low:
+                            msg = "%s (Send to Bter), Bittrex, %s (From Bter), %.4f%%, %s %s" % (p,i,100*(float(ratio)-1),bitt_fee[p]["static"],p)
+                            print msg
+
+                    if p in bit_price and i in bit_price[p]:
+                        ratio = bit_price[p][i]/bitt_price[p][i]
+                        if High > ratio > Low:
+                            msg = "%s (Send to Bitfinex), Bittrex, %s(From Bittrex), %.4f%%, %s %s" % (p,i,100*(float(ratio)-1),bitt_fee[p]["static"],p)
                             print msg
 
         time.sleep(delay)
