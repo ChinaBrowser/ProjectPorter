@@ -84,10 +84,10 @@ def main():
                             msg = "%s (Send to Bitfinex), Poloniex, %s (From Bitfinex), %.4f%%, %s %s" % (p,i,100*(float(ratio)-1),polo_fee[p]["static"],p)
                             print msg
 
-                    if p in bitt_price and i in bitt_price[p]:
+                    if p in bitt_price and i in bitt_price[p] and i not in poloniex.curr_default:
                         ratio = bitt_price[p][i]/polo_price[p][i]
                         if High > ratio > Low:
-                            msg = "%s (Send to Bittrex), Poloniex, %s(From Bittrex), %.4f%%, %s%% + %s %s" % (p,i,100*(float(ratio)-1),100*polo_fee[p]["rate"],polo_fee[p]["static"],p)
+                            msg = "%s (Send to Bittrex), Poloniex, %s(From Bittrex), %.4f%%, %s %s" % (p,i,100*(float(ratio)-1),polo_fee[p]["static"],p)
                             print msg
 
         #Bitfinex
