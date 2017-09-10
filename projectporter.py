@@ -122,19 +122,19 @@ def main():
                     if i == p:
                         continue
 
-                    if p in polo_price and i in polo_price[p]:
+                    if p in polo_price and i in polo_price[p] and i not in bittrex.curr_default:
                         ratio = polo_price[p][i]/bitt_price[p][i]
                         if High > ratio > Low:
                             msg = "%s (Send to Poloniex), Bittrex, %s (From Poloniex), %.4f%%, %s %s" % (p,i,100*(float(ratio)-1),bitt_fee[p]["static"],p)
                             print msg
 
-                    if p in bter_price and i in bter_price[p]:
+                    if p in bter_price and i in bter_price[p] and i not in bittrex.curr_default:
                         ratio = bter_price[p][i]/bitt_price[p][i]
                         if High > ratio > Low:
                             msg = "%s (Send to Bter), Bittrex, %s (From Bter), %.4f%%, %s %s" % (p,i,100*(float(ratio)-1),bitt_fee[p]["static"],p)
                             print msg
 
-                    if p in bit_price and i in bit_price[p]:
+                    if p in bit_price and i in bit_price[p] and i not in bittrex.curr_default:
                         ratio = bit_price[p][i]/bitt_price[p][i]
                         if High > ratio > Low:
                             msg = "%s (Send to Bitfinex), Bittrex, %s(From Bittrex), %.4f%%, %s %s" % (p,i,100*(float(ratio)-1),bitt_fee[p]["static"],p)
