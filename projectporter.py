@@ -11,6 +11,8 @@ import poloniex
 import bitfinex
 
 delay=10
+High=1.15
+Low=1.035
 
 def main():
     bter_list = bter.getCoinList()
@@ -35,14 +37,14 @@ def main():
 
                     if p in polo_price and i in polo_price[p]:
                         ratio = polo_price[p][i]/bter_price[p][i]
-                        if 1.15 > ratio > 1.035:
-                            msg = "Bought %s from Bter via %s, Sold at Poloniex, %.4f%% profit, %s%% + %s %s fee" % (p,i,100*(float(ratio)-1),100*bter.getFee()[p]["rate"],bter.getFee()[p]["static"],p)
+                        if High > ratio > Low:
+                            msg = "%s, Bter, %s(From Poloniex), Poloniex, %.4f%%, %s%% + %s %s" % (p,i,100*(float(ratio)-1),100*bter.getFee()[p]["rate"],bter.getFee()[p]["static"],p)
                             print msg
 
                     if p in bit_price and i in bit_price[p]:
                         ratio = bit_price[p][i]/bter_price[p][i]
-                        if 1.15 > ratio > 1.035:
-                            msg = "Bought %s from Bter via %s, Sold at Bitfinex, %.4f%% profit, %s%% + %s %s fee" % (p,i,100*(float(ratio)-1),100*bter.getFee()[p]["rate"],bter.getFee()[p]["static"],p)
+                        if High > ratio > Low:
+                            msg = "%s, Bter, %s(From Bitfinex), Bitfinex, %.4f%%, %s%% + %s %s" % (p,i,100*(float(ratio)-1),100*bter.getFee()[p]["rate"],bter.getFee()[p]["static"],p)
                             print msg
 
         #Poloniex
@@ -55,14 +57,14 @@ def main():
                     if p in bter_price and i in bter_price[p] and i not in poloniex.curr_default:
                         #print "%s %s" % (p,i)
                         ratio = bter_price[p][i]/polo_price[p][i]
-                        if 1.15 > ratio > 1.035:
-                            msg = "Bought %s from Poloniex via %s, Sold at Bter, %.4f%% profit, %s %s fee" % (p,i,100*(float(ratio)-1),poloniex.getFee()[p]["static"],p)
+                        if High > ratio > Low:
+                            msg = "%s, Poloniex, %s(From Bter), Bter, %.4f%%, %s %s" % (p,i,100*(float(ratio)-1),poloniex.getFee()[p]["static"],p)
                             print msg
 
                     if p in bit_price and i in bit_price[p] and i not in poloniex.curr_default:
                         ratio = bit_price[p][i]/polo_price[p][i]
-                        if 1.15 > ratio > 1.035:
-                            msg = "Bought %s from Poloniex via %s, Sold at Bitfinex, %.4f%% profit, %s %s fee" % (p,i,100*(float(ratio)-1),poloniex.getFee()[p]["static"],p)
+                        if High > ratio > Low:
+                            msg = "%s, Poloniex, %s(From Bitfinex), Bitfinex, %.4f%%, %s %s" % (p,i,100*(float(ratio)-1),poloniex.getFee()[p]["static"],p)
                             print msg
 
         #Bitfinex
@@ -74,14 +76,14 @@ def main():
 
                     if p in polo_price and i in polo_price[p]:
                         ratio = polo_price[p][i]/bit_price[p][i]
-                        if 1.15 > ratio > 1.035:
-                            msg = "Bought %s from Bitfinex via %s, Sold at Poloniex, %.4f%% profit, %s %s fee" % (p,i,100*(float(ratio)-1),bitfinex.getFee()[p]["static"],p)
+                        if High > ratio > Low:
+                            msg = "%s, Bitfinex, %s(From Poloniex), Poloniex, %.4f%%, %s %s" % (p,i,100*(float(ratio)-1),bitfinex.getFee()[p]["static"],p)
                             print msg
 
                     if p in bter_price and i in bter_price[p]:
                         ratio = bter_price[p][i]/bit_price[p][i]
-                        if 1.15 > ratio > 1.035:
-                            msg = "Bought %s from Bitfinex via %s, Sold at Bter, %.4f%% profit, %s %s fee" % (p,i,100*(float(ratio)-1),bitfinex.getFee()[p]["static"],p)
+                        if High > ratio > Low:
+                            msg = "%s, Bitfinex, %s(From Bter), Bter, %.4f%%, %s %s" % (p,i,100*(float(ratio)-1),bitfinex.getFee()[p]["static"],p)
                             print msg
 
         time.sleep(delay)
