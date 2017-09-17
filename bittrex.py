@@ -24,18 +24,18 @@ def getCurrentData():
     data = requests.get("https://bittrex.com/api/v1.1/public/getmarketsummaries").json()["result"]
 
     for coin in coin_list:
+        if coin == "BTC":
+            continue
         bitt[coin] = {}
         for curr in curr_default:
             pair = "%s-%s" % (curr,coin)
             if coin == curr:
                 continue
-            if coin == "BTC":
-                continue
             if pair in ban_list:
                 continue
+            bitt[coin][curr] = {}
             for i in range(0,len(data)):
                 if data[i]["MarketName"] == pair:
-                    bitt[coin][curr] = {}
                     bitt[coin][curr]["Last"] = data[i]["Last"]
                     bitt[coin][curr]["Bid"] = data[i]["Bid"]
                     bitt[coin][curr]["Ask"] = data[i]["Ask"]
@@ -49,7 +49,7 @@ def getCurrentData():
             if coin == curr:
                 continue
             else:
-                print "%s %s" % (coin,curr)
+                bitt[coin][curr] = {}
                 price["curr"] = bitt[curr]["BTC"]
                 price["coin"] = bitt[coin]["BTC"]
                 bitt[coin][curr]["Ask"] = (price["coin"]["Ask"]/(1-fee["buy"]))/(price["curr"]["Bid"]*(1-fee["sell"]))
