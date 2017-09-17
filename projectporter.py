@@ -12,8 +12,8 @@ import bitfinex
 import bittrex
 
 delay=10
-High=1.50
-Low=1.08
+High=1.35
+Low=1.035
 
 def main():
     bter_list = bter.getCoinList()
