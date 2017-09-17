@@ -4,6 +4,9 @@
 # Copyright 2017 FawkesPan
 #
 #
+# Bittrex's API Interface
+# https://bittrex.com/Home/Api
+#
 
 import string
 import requests
@@ -11,31 +14,35 @@ import requests
 coin_list = ["BTC","LTC","ETH","BCC","ZEC","XRP","NXT","ETC","BTS","DOGE","DASH","XEM","XMR"]
 curr_list = ["BTC","LTC","ETH","BCC","ZEC","XRP","NXT","ETC","BTS","DOGE","DASH","XEM","XMR"]
 curr_default = ["BTC","ETH","USDT"]
+ban_list = ["ETH_NXT","USDT_NXT","USDT_BTS","ETH_DOGE","USDT_XEM"]
 
 def getCurrentData():
     bitt = {}
     price = {}
+    coin_pair = []
     fee = getFee()["trade"]
-    for coin in coin_list:
-        bitt[coin] = {}
-        for curr in curr_default:
-            if coin == curr:
-                continue
-            if coin == "BTC":
-                continue
-            if coin == "NXT" and curr != "BTC":
-                continue
-            if coin == "BTS" and curr == "USDT":
-                continue
-            if coin == "DOGE" and curr == "ETH":
-                continue
-            if coin == "DOGE" and curr == "USDT":
-                continue
-            if coin == "XEM" and curr == "USDT":
-                continue
-            package = "https://bittrex.com/api/v1.1/public/getmarketsummary?market=%s-%s" % (curr.lower(),coin.lower())
-            data = requests.get(package).json()["result"][0]
-            bitt[coin][curr] = (float(data["Ask"])+float(data["Bid"]))/2 
+    data = requests.get("https://bittrex.com/api/v1.1/public/getmarketsummaries").json()["result"]
+
+
+    for i in range(0,len(data)):
+        for coin in coin_list:
+            bitt[coin] = {}
+            for curr in curr_default:
+                pair = "%s-%s" % (curr,coin)
+                if coin == curr:
+                    continue
+                if coin == "BTC":
+                    continue
+                if pair in ban_list:
+                    continue
+                if data[i]["MarketName"] == pair:
+                    print "%s %s" % (coin,curr)
+                    bitt[coin][curr] = {}
+                    bitt[coin][curr]["Last"] = data[i]["Last"]
+                    bitt[coin][curr]["Bid"] = data[i]["Bid"]
+                    bitt[coin][curr]["Ask"] = data[i]["Ask"]
+                    print bitt[coin][curr]
+
 
     for coin in coin_list:
         for curr in curr_list:
@@ -44,11 +51,13 @@ def getCurrentData():
             if curr in curr_default:
                 continue
             if coin == curr:
-                bitt[coin][curr] = 1.00
+                continue
             else:
+                print "%s %s" % (coin,curr)
                 price["curr"] = bitt[curr]["BTC"]
                 price["coin"] = bitt[coin]["BTC"]
-                bitt[coin][curr] = (price["coin"]/(1-fee["buy"]))/(price["curr"]*(1-fee["sell"]))
+                bitt[coin][curr]["Ask"] = (price["coin"]["Ask"]/(1-fee["buy"]))/(price["curr"]["Bid"]*(1-fee["sell"]))
+                bitt[coin][curr]["Bid"] = (price["coin"]["Bid"]/(1-fee["buy"]))/(price["curr"]["Ask"]*(1-fee["sell"]))
             
     return bitt
 

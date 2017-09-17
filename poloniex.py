@@ -25,16 +25,22 @@ def getCurrentData():
             polo["BCH"] = {}
         for curr in curr_default:
             if coin == curr:
-                polo[coin][curr] = 1.00
+                continue
             else:
+                polo[coin][curr] = {}
                 if coin == "BCC":
                     struct = "%s_%s" % (curr,"BCH")
                     if struct in data:
-                        polo["BCH"][curr] = float(data[struct]["last"])
+                        polo["BCH"][curr] = {}
+                        polo["BCH"][curr]["Last"] = float(data[struct]["last"])
+                        polo["BCH"][curr]["Bid"] = float(data[struct]["highestBid"])
+                        polo["BCH"][curr]["Ask"] = float(data[struct]["lowestAsk"])
                 else:
                     struct = "%s_%s" % (curr,coin)
                     if struct in data:
-                        polo[coin][curr] = float(data[struct]["last"])
+                        polo[coin][curr]["Last"] = float(data[struct]["last"])
+                        polo[coin][curr]["Bid"] = float(data[struct]["highestBid"])
+                        polo[coin][curr]["Ask"] = float(data[struct]["lowestAsk"])
 
     polo["BCC"] = polo["BCH"]
 
@@ -43,17 +49,16 @@ def getCurrentData():
             if curr in curr_default:
                 continue
             if coin == curr:
-                polo[coin][curr] = 1.00
+                continue
             else:
                 struct = "%s_%s" % (curr,coin)
                 if struct in data:
                     continue
+                polo[coin][curr] = {}
                 price["curr"] = polo[curr]["BTC"]
                 price["coin"] = polo[coin]["BTC"]
-                polo[coin][curr] = (price["coin"]/(1-fee["buy"]))/(price["curr"]*(1-fee["sell"]))
-                #msg = "Poloniex %s %s %.5f" %(coin,curr,polo[coin][curr])
-                #print msg
-                
+                polo[coin][curr]["Ask"] = (price["coin"]["Ask"]/(1-fee["buy"]))/(price["curr"]["Bid"]*(1-fee["sell"]))
+                polo[coin][curr]["Bid"] = (price["coin"]["Bid"]/(1-fee["buy"]))/(price["curr"]["Ask"]*(1-fee["sell"]))
 
     return polo
 

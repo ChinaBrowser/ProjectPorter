@@ -19,21 +19,27 @@ def getCurrentData():
     price = {}
     fee = getFee()["trade"]
 
-    for i in range(0,len(data)):
-        if data[i]["symbol"] in coin_list and data[i]["curr_b"] == "CNY":
-            bter["%s" % data[i]["symbol"]] = {}
-            bter["%s" % data[i]["symbol"]]["CNY"] = float(data[i]["rate"])
+    for coin in coin_list:
+        bter[coin] = {}
+        bter[coin]["CNY"] = {}
+        package = "http://data.bter.com/api2/1/ticker/%s_cny" % coin.lower()
+        data = requests.get(package).json()
+        bter[coin]["CNY"]["Last"] = data["last"]
+        bter[coin]["CNY"]["Bid"] = data["highestBid"]
+        bter[coin]["CNY"]["Ask"] = data["lowestAsk"]
 
     for coin in coin_list:
         for curr in curr_list:
             if curr in curr_default:
                 continue
             if coin == curr:
-                bter[coin][curr] = 1.00
+                continue
             else:
+                bter[coin][curr] = {}
                 price["curr"] = bter[curr]["CNY"]
                 price["coin"] = bter[coin]["CNY"]
-                bter[coin][curr] = (price["coin"]/(1-fee["buy"]))/(price["curr"]*(1-fee["sell"]))
+                bter[coin][curr]["Ask"] = (price["coin"]["Ask"]/(1-fee["buy"]))/(price["curr"]["Bid"]*(1-fee["sell"]))
+                bter[coin][curr]["Bid"] = (price["coin"]["Bid"]/(1-fee["buy"]))/(price["curr"]["Ask"]*(1-fee["sell"]))
                 #msg = "Bter %s %s %.5f" %(coin,curr,bter[coin][curr])
                 #print msg
             
