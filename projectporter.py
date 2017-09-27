@@ -13,7 +13,7 @@ import bittrex
 
 delay=10
 High=1.35
-Low=1.035
+Low=1.01
 
 def main():
     bter_list = bter.getCoinList()
@@ -137,7 +137,7 @@ def main():
                     if p in bit_price and i in bit_price[p] and p not in bittrex.curr_default and "Bid" in bit_price[p][i]:
                         ratio = bit_price[p][i]["Bid"]/bitt_price[p][i]["Ask"]
                         if High > ratio > Low:
-                            msg = "%s (Send to Bitfinex), Bittrex, %s(From Bittrex), %.4f%%, %s %s + %s %s" % (p,i,100*(float(ratio)-1),bitt_fee[p]["static"],p,bit_fee[i]["static"],i)
+                            msg = "%s (Send to Bitfinex), Bittrex, %s(From Bitfinex), %.4f%%, %s %s + %s %s" % (p,i,100*(float(ratio)-1),bitt_fee[p]["static"],p,bit_fee[i]["static"],i)
                             print msg
 
         time.sleep(delay)
